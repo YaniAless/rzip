@@ -27,12 +27,13 @@ fn main() {
 
     let action = matches.value_of("action").unwrap();
     let zip_file_name = matches.value_of("zip_file_name").unwrap();
-
+    
     if let Some(files) = matches.values_of("files") {
         for file in files {
             println!("My file name is {:?}", file);
         }
-    }    
+    } 
+       
 
     if action == "zip" {
         zip(zip_file_name)
@@ -46,6 +47,8 @@ fn main() {
 fn zip(zip_file_name: &str) {
     println!("ZIP");
     println!("zip_file_name -> {:?}", zip_file_name);
+
+    
 }
 
 fn unzip(zip_file_name: &str) {
@@ -53,7 +56,8 @@ fn unzip(zip_file_name: &str) {
     println!("zip_file_name -> {:?}", zip_file_name);
 
     if zip_file_name.contains(".zip") {
-        println!("Your file has a .zip file");
+        println!("Your file has a .zip extension");
+        println!("UNZIPPING YOUR FILE");
     }
     else{
         println!("Your file doesn't have a .zip extension");
