@@ -11,16 +11,15 @@ fn main() {
         .arg(Arg::with_name("action")
             .required(true)
             .value_name("ACTION")
-            .multiple(false)
-            .number_of_values(1)
+            .possible_value("unzip")
+            .possible_value("zip")
             .help("Whether you want to 'zip' or 'unzip'"))
         .arg(Arg::with_name("zip_file_name")
             .required(true)
-            .multiple(false)
             .value_name("ZIP_FILE_NAME")
             .help("In case you choose 'zip', it will be the wanted name of your zip file. If you choose 'unzip' just need the zip file path to unzip"))
-        .arg(Arg::with_name("FILES")
-            .required_if("action","zip")
+        .arg(Arg::with_name("files")
+            .requires_if("action","zip")
             .value_name("FILE_LIST")
             .multiple(true)
             .help("Here will be the list of files you want to zip"))
@@ -28,22 +27,35 @@ fn main() {
 
     let action = matches.value_of("action").unwrap();
     let zip_file_name = matches.value_of("zip_file_name").unwrap();
-    let _files: Vec<&str> = matches.values_of("files").unwrap().collect();
+
+    if let Some(files) = matches.values_of("files") {
+        for file in files {
+            println!("My file name is {:?}", file);
+        }
+    }    
 
     if action == "zip" {
-        zip(action, zip_file_name)
+        zip(zip_file_name)
     } else if action == "unzip" {
-        unzip();
+        unzip(zip_file_name)
     } else {
         print!("Please choose 'zip' or 'unzip' - ex : cargo run zip")
     }
 }
 
-fn zip(action: &str, zip_file_name: &str) {
-    println!("action -> {:?} -- zip_file_name -> {:?}", action, zip_file_name);
-    println!("Let's create a zip")
+fn zip(zip_file_name: &str) {
+    println!("ZIP");
+    println!("zip_file_name -> {:?}", zip_file_name);
 }
 
-fn unzip() {
-    println!("Let's unzip a file")
+fn unzip(zip_file_name: &str) {
+    println!("UNZIP");
+    println!("zip_file_name -> {:?}", zip_file_name);
+
+    if zip_file_name.contains(".zip") {
+        println!("Your file has a .zip file");
+    }
+    else{
+        println!("Your file doesn't have a .zip extension");
+    }
 }
