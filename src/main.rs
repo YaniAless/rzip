@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate clap;
 
-use clap::{Arg, App};
+use clap::{App, Arg};
 
 fn main() {
     let matches = App::new("Rzip")
@@ -27,28 +27,28 @@ fn main() {
 
     let action = matches.value_of("action").unwrap();
     let zip_file_name = matches.value_of("zip_file_name").unwrap();
-    
-    if let Some(files) = matches.values_of("files") {
-        for file in files {
-            println!("My file name is {:?}", file);
-        }
-    } 
-       
 
     if action == "zip" {
-        zip(zip_file_name)
+        if matches.is_present("files") {
+            let files: Vec<&str> = matches.values_of("files").unwrap().collect();
+            zip(zip_file_name, files)
+        }
+        else{
+            println!("Please enter a list of file")
+        }
+        
     } else if action == "unzip" {
         unzip(zip_file_name)
     } else {
-        print!("Please choose 'zip' or 'unzip' - ex : cargo run zip")
-    }
+        println!("Please choose 'zip' or 'unzip' - ex : cargo run zip")
+    }    
 }
 
-fn zip(zip_file_name: &str) {
-    println!("ZIP");
-    println!("zip_file_name -> {:?}", zip_file_name);
-
+fn zip(zip_file_name: &str, files: Vec<&str>) {
     
+    println!("You've choose to create a zip file called : {}", zip_file_name);
+
+    println!("number of files {}", files.len())
 }
 
 fn unzip(zip_file_name: &str) {
@@ -58,8 +58,9 @@ fn unzip(zip_file_name: &str) {
     if zip_file_name.contains(".zip") {
         println!("Your file has a .zip extension");
         println!("UNZIPPING YOUR FILE");
-    }
-    else{
+    } else {
         println!("Your file doesn't have a .zip extension");
     }
 }
+
+
