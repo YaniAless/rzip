@@ -1,7 +1,18 @@
 #[macro_use]
 extern crate clap;
 
+extern crate zip;
+
+
 use clap::{App, Arg};
+
+use std::io::{Seek, Write};
+use zip::result::ZipResult;
+use zip::write::{FileOptions, ZipWriter};
+
+use std::fs::File;
+
+static FILE_CONTENTS: &'static [u8] = include_bytes!("../Cargo.lock");
 
 fn main() {
     let matches = App::new("Rzip")
@@ -48,7 +59,25 @@ fn zip(zip_file_name: &str, files: Vec<&str>) {
     
     println!("You've choose to create a zip file called : {}", zip_file_name);
 
-    println!("number of files {}", files.len())
+    println!("number of files {}", files.len());
+
+    
+    let mut file = File::create(zip_file_name).expect("Couldn't create file");
+    create_zip_archive(&mut file, files).expect("Couldn't create archive");
+
+}
+
+fn create_zip_archive<T: Seek + Write>(buf: &mut T, _files: Vec<&str>) -> ZipResult<()> {
+    let mut writer = ZipWriter::new(buf);
+
+    for file in _files {
+        writer.start_file(file, FileOptions::default())?;
+        writer.write(FILE_CONTENTS)?;
+        
+        
+    }
+    writer.finish()?;
+    Ok(())
 }
 
 fn unzip(zip_file_name: &str) {
