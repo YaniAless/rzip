@@ -3,7 +3,7 @@ extern crate clap;
 
 extern crate zip;
 
-
+use regex::Regex;
 use clap::{App, Arg};
 
 use std::io::{Seek, Write};
@@ -52,19 +52,22 @@ fn main() {
         unzip(zip_file_name)
     } else {
         println!("Please choose 'zip' or 'unzip' - ex : cargo run zip")
-    }    
+    }
 }
 
 fn zip(zip_file_name: &str, files: Vec<&str>) {
-    
-    println!("You've choose to create a zip file called : {}", zip_file_name);
-
-    println!("number of files {}", files.len());
-
-    
-    let mut file = File::create(zip_file_name).expect("Couldn't create file");
-    create_zip_archive(&mut file, files).expect("Couldn't create archive");
-
+    let re = Regex::new(r"\.(zip|gz|tar|rar|7z)$").unwrap();
+    if re.is_match(zip_file_name) {
+        println!("You've choose to create a compressed file called : {}", zip_file_name);
+        println!("number of files {}", files.len());
+        
+        let mut file = File::create(zip_file_name).expect("Couldn't create file");
+        create_zip_archive(&mut file, files).expect("Couldn't create archive");
+    }
+    else {        
+        println!("your file name needs to have one of these extensions");
+        println!("zip|gz|tar|rar|7z, you've choose {}", zip_file_name)
+    }
 }
 
 fn create_zip_archive<T: Seek + Write>(buf: &mut T, _files: Vec<&str>) -> ZipResult<()> {
@@ -72,9 +75,7 @@ fn create_zip_archive<T: Seek + Write>(buf: &mut T, _files: Vec<&str>) -> ZipRes
 
     for file in _files {
         writer.start_file(file, FileOptions::default())?;
-        writer.write(FILE_CONTENTS)?;
-        
-        
+        writer.write(FILE_CONTENTS)?;        
     }
     writer.finish()?;
     Ok(())
