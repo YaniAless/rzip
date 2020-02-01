@@ -6,8 +6,10 @@ extern crate zip;
 use regex::Regex;
 use clap::{App, Arg};
 
-use std::io::{Seek, Write};
+use std::io::{Seek, Write, Read};
 use zip::result::ZipResult;
+use zip::read::ZipFile;
+use zip::read::ZipArchive;
 use zip::write::{FileOptions, ZipWriter};
 
 use std::fs::File;
@@ -82,15 +84,38 @@ fn create_zip_archive<T: Seek + Write>(buf: &mut T, _files: Vec<&str>) -> ZipRes
 }
 
 fn unzip(zip_file_name: &str) {
+    /* DEBUG PRINT
     println!("UNZIP");
     println!("zip_file_name -> {:?}", zip_file_name);
+    */
 
-    if zip_file_name.contains(".zip") {
-        println!("Your file has a .zip extension");
-        println!("UNZIPPING YOUR FILE");
-    } else {
-        println!("Your file doesn't have a .zip extension");
+    let re = Regex::new(r"\.(zip|gz|tar|rar|7z)$").unwrap();
+
+    if re.is_match(zip_file_name) {
+        println!("You've choose to decompress a file called : {}", zip_file_name);
+        
+        let mut file = File::open(zip_file_name).expect("Couldn't open file");
+        let files = browse_zip_archive(&mut file, |f| {
+            /* To Write a file
+            let mut file = File::create(f.sanitized_name())?;
+            file.write_all(mut buf: &[u8])
+            */
+            Ok(format!("Your zip file '{}' contains {}", zip_file_name,f.name()))
+        });
+        println!("{:?}", files);
     }
+    else {        
+        println!("Your file name needs to use one of these extensions");
+        println!("zip|gz|tar|rar|7z, you've choose {}", zip_file_name)
+    }
+}
+
+fn browse_zip_archive<T, F, U>(buf: &mut T, browse_func: F) -> ZipResult<Vec<U>> where T: Read + Seek, F: Fn(&ZipFile) -> ZipResult<U>
+{
+    let mut archive = ZipArchive::new(buf)?;
+    (0..archive.len())
+        .map(|i| archive.by_index(i).and_then(|file| browse_func(&file)))
+        .collect()
 }
 
 

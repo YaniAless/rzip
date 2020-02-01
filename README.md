@@ -4,14 +4,21 @@ RZIP is a small CLI tool created with Rust language to zip/unzip multiple files.
 
 We are using [Clap](https://github.com/clap-rs/clap) to handle command parsing
 
-### Windows
+## Usages
 
-* Add the the path to the **rzip** folder in your PATH environnement variable
+When in the folder of rzip you can use these commands
 
-### Mac
+**For the name of your file when zipping you'll need to add the file extension in your FILENAME (filename.zip)** 
 
-* TODO
+```bash
+    cargo run zip <ZIP_FILE_NAME> [FILES]
+```
 
-### Linux
+```bash
+    cargo run unzip <ZIP_FILE_NAME>
+```
 
-* TODO
+## Windows
+
+* You can add the the path to the **rzip** folder in your PATH environnement variable to use 'rzip' command from anywhere
+
