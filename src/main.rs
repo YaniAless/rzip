@@ -1,6 +1,5 @@
 #[macro_use]
 extern crate clap;
-
 extern crate zip;
 
 use regex::Regex;
@@ -14,7 +13,8 @@ use zip::write::{FileOptions, ZipWriter};
 
 use std::fs::File;
 
-static FILE_CONTENTS: &'static [u8] = include_bytes!("../Cargo.lock");
+// To fill my the files added to the zip
+static FILE_CONTENTS: &'static [u8] = include_bytes!("../README.md");
 
 fn main() {
     let matches = App::new("Rzip")
@@ -48,8 +48,7 @@ fn main() {
         }
         else{
             println!("Please enter a list of file")
-        }
-        
+        }        
     } else if action == "unzip" {
         unzip(zip_file_name)
     } else {
@@ -96,6 +95,11 @@ fn unzip(zip_file_name: &str) {
         
         let mut file = File::open(zip_file_name).expect("Couldn't open file");
         let files = browse_zip_archive(&mut file, |f| {
+            //let v: Vec<&str> = zip_file_name.split_terminator(".").collect();
+            //let newString = ".".
+            //fs::create_dir(v[1])?;
+            //File::create("./test/{}",f.name())?;
+
             /* To Write a file
             let mut file = File::create(f.sanitized_name())?;
             file.write_all(mut buf: &[u8])
