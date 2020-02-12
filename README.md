@@ -1,5 +1,8 @@
 # rzip
 
+*This is a school project made with around 15 hours of Rust*
+
+
 RZIP is a small CLI tool created with Rust language to zip/unzip multiple files.
 
 We are using [Clap](https://github.com/clap-rs/clap) to handle command parsing
@@ -21,4 +24,5 @@ When in the folder of rzip you can use these commands
 ## Windows
 
 * You can add the the path to the **rzip** folder in your PATH environnement variable to use 'rzip' command from anywhere
+
 
