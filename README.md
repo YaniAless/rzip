@@ -7,6 +7,8 @@ RZIP is a small CLI tool created with Rust language to zip/unzip multiple files.
 
 We are using [Clap](https://github.com/clap-rs/clap) to handle command parsing
 
+Special thanks to [Zbigniew Siciarz](https://siciarz.net)'s blog for the help with zip
+
 ## Usages
 
 When in the folder of rzip you can use these commands
